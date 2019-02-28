@@ -267,10 +267,27 @@ describe.only('PATCH /api/bookmarks/:id', () => {
     });
   });
 
+  context('returns 404 when no :id is specified', () => {
 
+    it('xxxxxx', () => {
+      return supertest(app)
+        .patch('/api/bookmarks')
+        .set('Authorization', `Bearer ${process.env.API_KEY}`)
+        .send(actualData)
+        .expect(404);
+    });
+  });
 
+  context('returns 400 when body is invalid/empty', () => {
 
-  // xxx
+    it('xxx', () => {
+      return supertest(app)
+        .patch('/api/bookmarks/4')
+        .set('Authorization', `Bearer ${process.env.API_KEY}`)
+        .expect(400);
+    });
+  });
+
 });
 
 

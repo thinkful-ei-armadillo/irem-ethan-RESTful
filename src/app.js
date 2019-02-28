@@ -18,7 +18,7 @@ const morganOption = (NODE_ENV === 'production')
   ? 'tiny'
   : 'dev';
 
-app.use(morgan(morganOption));
+// app.use(morgan(morganOption));
 app.use(helmet());
 app.use(cors());
 
@@ -47,6 +47,14 @@ app.use(function handleToken(req, res, next) {
 
   next();
 });
+
+// default 404 route handler
+// app.use((req, res) => {
+//   res.status(404).json({
+//     message: 'Endpoint not found'
+//   });
+// });
+
 
 app.use(function errorHandler(error, req, res, next) {
   let response;
@@ -117,6 +125,11 @@ router.route('/bookmarks/:id')
   })
   .patch((req, res) =>{
     const db = req.app.get('db');
+
+    if (Object.keys(req.body).length === 0) {
+      return res.status(400).end();
+    }
+
     return bookmarks.updateBookmark(db,req.params.id, req.body).then(resJson => {
       res.status(204).end();
     });
