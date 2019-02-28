@@ -203,6 +203,71 @@ describe('DELETE /bookmarks/:id', () => {
   });
 });
 
+describe.only('PATCH /bookmarks/:id', () => {
+
+  const seedData = [{
+    id: 1,
+    title: 'Alpha',
+    url: 'http://example.com',
+    description: 'a description',
+    rating: 1
+  },
+  {
+    id: 2,
+    title: 'Bravo',
+    url: 'http://example.com',
+    description: 'a description',
+    rating: 2
+  },
+  {
+    id: 3,
+    title: 'Charlie',
+    url: 'http://example.com',
+    description: 'a description',
+    rating: 3
+  },
+  {
+    id: 4,
+    title: 'Delta',
+    url: 'http://example.com',
+    description: 'a description',
+    rating: 4
+  },
+  {
+    id: 5,
+    title: 'Echo',
+    url: 'http://example.com',
+    description: 'a description',
+    rating: 5
+  },
+  ];
+
+  const actualData = {title: 'New Title'};
+  beforeEach('empty,populate table', () => {
+    return db('bookmarks').truncate().then(() => {
+      return db('bookmarks').insert(seedData);
+    });
+  });
+
+  afterEach('empty', () => {
+    return db('bookmarks').truncate();
+  });
+
+  context('updates an item by its id', () => {
+    it('gets a bookmark by id and updates it afterwards', () => {
+      return supertest(app)
+        .patch('/bookmarks/4')
+        .set('Authorization', `Bearer ${process.env.API_KEY}`)
+        .send(actualData)
+        .expect(204)
+        .then((resp) => {
+          expect(resp.body).to.be.deep.equal({});
+        });
+    });
+  });
+});
+
+
 describe('XSS', () => {
 
   const maliciousBookmark = {

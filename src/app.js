@@ -58,7 +58,8 @@ app.use(function errorHandler(error, req, res, next) {
   }
   res.status(500).json(response);
 });
-
+ 
+app.use(express.json());
 app.use(router);
 
 router.route('/bookmarks')
@@ -72,7 +73,7 @@ router.route('/bookmarks')
         res.json(data.map(sanitize));
       }));
   })
-  .post(express.json(), (req, res) => {
+  .post((req, res) => {
     const { title, url, description, rating } = req.body;
 
     const bookmark = {
@@ -107,12 +108,17 @@ router.route('/bookmarks/:id')
     const db = req.app.get('db');
 
     return bookmarks.deleteBookmark(db, req.params.id).then(resjson => {
-      console.log(resjson);
       if (resjson === 1) {
         res.status(204).end();
       } else {
         res.status(404).end();
       }
+    });
+  })
+  .patch((req, res) =>{
+    const db = req.app.get('db');
+    return bookmarks.updateBookmark(db,req.params.id, req.body).then(resJson => {
+      res.status(204).end();
     });
   });
 
