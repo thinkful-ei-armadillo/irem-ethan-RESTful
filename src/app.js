@@ -58,9 +58,9 @@ app.use(function errorHandler(error, req, res, next) {
   }
   res.status(500).json(response);
 });
- 
+
 app.use(express.json());
-app.use(router);
+app.use('/api', router);
 
 router.route('/bookmarks')
   .get((req, res) => {

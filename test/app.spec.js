@@ -17,7 +17,7 @@ after('disconnect from DB', () => {
   db.destroy();
 });
 
-describe('GET /bookmarks', () => {
+describe('GET /api/bookmarks', () => {
 
   const seedData = [
     { id: 1, title: 'Alpha', url: 'http://example.com', description: 'a description', rating: 1 },
@@ -40,7 +40,7 @@ describe('GET /bookmarks', () => {
   it('Should return expected data', () => {
 
     return supertest(app)
-      .get('/bookmarks')
+      .get('/api/bookmarks')
       .set('Authorization', `Bearer ${process.env.API_KEY}`)
       .expect(200)
       .expect('Content-Type', /json/)
@@ -51,7 +51,7 @@ describe('GET /bookmarks', () => {
   });
 });
 
-describe('POST /bookmarks', () => {
+describe('POST /api/bookmarks', () => {
 
   beforeEach('empty table', () => {
     return db('bookmarks').truncate();
@@ -83,7 +83,7 @@ describe('POST /bookmarks', () => {
   });
 });
 
-describe('GET /bookmarks/:id', () => {
+describe('GET /api/bookmarks/:id', () => {
   const seedData = [{
     id: 1,
     title: 'Alpha',
@@ -132,7 +132,7 @@ describe('GET /bookmarks/:id', () => {
 
   it('gets a bookmark by id', () => {
     return supertest(app)
-      .get('/bookmarks/4')
+      .get('/api/bookmarks/4')
       .set('Authorization', `Bearer ${process.env.API_KEY}`)
       .expect(200)
       .expect('Content-Type', /json/)
@@ -142,7 +142,7 @@ describe('GET /bookmarks/:id', () => {
   });
 });
 
-describe('DELETE /bookmarks/:id', () => {
+describe('DELETE /api/bookmarks/:id', () => {
 
   const seedData = [{
     id: 1,
@@ -193,7 +193,7 @@ describe('DELETE /bookmarks/:id', () => {
   it('deletes an item by its id', () => {
     it('gets a bookmark by id', () => {
       return supertest(app)
-        .delete('/bookmarks/4')
+        .delete('/api/bookmarks/4')
         .set('Authorization', `Bearer ${process.env.API_KEY}`)
         .expect(200)
         .then((resp) => {
@@ -203,7 +203,7 @@ describe('DELETE /bookmarks/:id', () => {
   });
 });
 
-describe.only('PATCH /bookmarks/:id', () => {
+describe.only('PATCH /api/bookmarks/:id', () => {
 
   const seedData = [{
     id: 1,
@@ -243,6 +243,7 @@ describe.only('PATCH /bookmarks/:id', () => {
   ];
 
   const actualData = {title: 'New Title'};
+
   beforeEach('empty,populate table', () => {
     return db('bookmarks').truncate().then(() => {
       return db('bookmarks').insert(seedData);
@@ -256,7 +257,7 @@ describe.only('PATCH /bookmarks/:id', () => {
   context('updates an item by its id', () => {
     it('gets a bookmark by id and updates it afterwards', () => {
       return supertest(app)
-        .patch('/bookmarks/4')
+        .patch('/api/bookmarks/4')
         .set('Authorization', `Bearer ${process.env.API_KEY}`)
         .send(actualData)
         .expect(204)
@@ -265,6 +266,11 @@ describe.only('PATCH /bookmarks/:id', () => {
         });
     });
   });
+
+
+
+
+  // xxx
 });
 
 
@@ -289,10 +295,10 @@ describe('XSS', () => {
   });
 
 
-  it('GET /bookmarks should sanitize response', () => {
+  it('GET /api/bookmarks should sanitize response', () => {
 
     return supertest(app)
-      .get('/bookmarks')
+      .get('/api/bookmarks')
       .set('Authorization', `Bearer ${process.env.API_KEY}`)
       .expect(200)
       .expect('Content-Type', /json/)
@@ -303,10 +309,10 @@ describe('XSS', () => {
       });
   });
 
-  it('GET /bookmarks/:id should sanitize response', () => {
+  it('GET /api/bookmarks/:id should sanitize response', () => {
 
     return supertest(app)
-      .get(`/bookmarks/${maliciousBookmark.id}`)
+      .get(`/api/bookmarks/${maliciousBookmark.id}`)
       .set('Authorization', `Bearer ${process.env.API_KEY}`)
       .expect(200)
       .expect('Content-Type', /json/)
